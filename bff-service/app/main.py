@@ -1,7 +1,7 @@
 import requests
 from app.config import settings
 from app.deps import get_current_user
-from app.models import Token
+from app.schemas import Token, UserPublic
 from fastapi import Depends, FastAPI
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,6 +50,29 @@ async def get_access_token() -> Token:
 @app.get("/protected", dependencies=[Depends(get_current_user)])
 async def protected_route():
     return {"message": "This is a protected route."}
+
+
+@app.get(
+    "/users",
+    response_model=list[UserPublic],
+)
+async def get_users(skip: int = 0, limit: int = 3):
+    url = f"http://{settings.USER_SERVICE_URL}:{settings.USER_SERVICE_PORT}/users"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            data = response.json()
+            return [UserPublic(**user) for user in data[skip : skip + limit]]
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to retrieve users",
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Request to user service failed: {str(e)}",
+        )
 
 
 # @app.get("/test_auth")
