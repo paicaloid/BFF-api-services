@@ -1,0 +1,7 @@
+{
+    // "python.envFile": ".env.local",
+    // "terminal.integrated.env.linux": {
+    //     "python.envFile": ".env.local"
+    // }
+    "python.envFile": "${workspaceFolder}/.env.local"
+}
