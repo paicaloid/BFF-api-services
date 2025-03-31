@@ -1,12 +1,27 @@
 import requests
 from app.config import settings
 from app.models import Token
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, Security, status
 from fastapi.exceptions import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
+
+api_key_header = APIKeyHeader(
+    name="X-Internal-API-Key",
+)
+
+
+def verify_api_key(api_key: str = Security(api_key_header)):
+    if api_key != settings.INTERNAL_API_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API Key",
+        )
+
 
 app = FastAPI(
     title="Login-Service",
+    dependencies=[Depends(verify_api_key)],
 )
 
 

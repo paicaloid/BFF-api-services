@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     OIDC_CLIENT_SECRET: str
     OIDC_AUDIENCE: str
 
+    INTERNAL_API_KEY: str
+
 
 settings = Settings()

@@ -1,54 +1,8 @@
 import requests
 from app.config import settings
-from app.schemas import PostCreate, PostPublic, Token, UserPostsPublic, UserPublic
+from app.crud.user import get_users
+from app.schemas import PostCreate, PostPublic, UserPostsPublic
 from fastapi import HTTPException
-
-
-async def get_access_token() -> Token:
-    """
-    Fetches an access token from the login service.
-    """
-    url = f"{settings.login_url}/access-token"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            return Token(
-                access_token=data["access_token"],
-                token_type=data["token_type"],
-            )
-        else:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Failed to retrieve access token",
-            )
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Request to login service failed: {str(e)}",
-        )
-
-
-async def get_users() -> list[UserPublic]:
-    """
-    Fetches a list of users from the user service.
-    """
-    url = f"{settings.user_url}/users"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            return [UserPublic(**user) for user in data]
-        else:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Failed to retrieve users",
-            )
-    except requests.exceptions.RequestException as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Request to user service failed: {str(e)}",
-        )
 
 
 async def get_posts() -> list[PostPublic]:
@@ -57,14 +11,14 @@ async def get_posts() -> list[PostPublic]:
     """
     url = f"{settings.post_url}/posts"
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=settings.header)
         if response.status_code == 200:
             data = response.json()
             return [PostPublic(**post) for post in data]
         else:
             raise HTTPException(
                 status_code=response.status_code,
-                detail="Failed to retrieve posts",
+                detail=response.text,
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(
@@ -109,6 +63,7 @@ async def create_post(post_in: PostCreate) -> None:
     headers = {
         "Content-Type": "application/json",
     }
+    headers.update(settings.header)
     data = post_in.model_dump()
     try:
         response = requests.post(url, json=data, headers=headers)

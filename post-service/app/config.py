@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     SA_PASSWORD: str
     MSSQL_DB: str
 
+    INTERNAL_API_KEY: str
+
 
 settings = Settings()

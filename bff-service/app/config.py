@@ -7,6 +7,13 @@ class Settings(BaseSettings):
         env_file=".env", env_ignore_empty=True, extra="ignore"
     )
 
+    INTERNAL_API_KEY: str
+
+    @computed_field  # type: ignore[misc]
+    @property
+    def header(self) -> dict[str, str]:
+        return {"X-Internal-API-Key": self.INTERNAL_API_KEY}
+
     LOGIN_SERVICE_URL: str = "localhost"
     LOGIN_SERVICE_PORT: int = 8100
 
