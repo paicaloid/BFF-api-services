@@ -75,8 +75,22 @@ async def get_users(skip: int = 0, limit: int = 3):
         )
 
 
-# @app.get("/test_auth")
-# def read_current_user(
-#     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
-# ):
-#     return {"scheme": credentials.scheme, "credentials": credentials.credentials}
+@app.get("/posts")
+async def get_posts_by_username(username: str):
+    url = f"http://{settings.POST_SERVICE_URL}:{settings.POST_SERVICE_PORT}/posts"
+    params = {"username": username}
+    try:
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            return data
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to retrieve posts",
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Request to post service failed: {str(e)}",
+        )

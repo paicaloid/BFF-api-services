@@ -1,0 +1,15 @@
+services:
+  bff:
+    restart: no
+    volumes:
+      - ./bff-service:/app
+    command: /start-reload.sh
+
+  login:
+    restart: no
+
+  user:
+    restart: no
+    # volumes:
+    #   - ./user-service:/app
+    # command: /start-reload.sh
