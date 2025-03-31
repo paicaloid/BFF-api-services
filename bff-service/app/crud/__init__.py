@@ -5,5 +5,8 @@ from .post import (  # noqa: F401
     get_posts_by_username,
 )
 from .user import (  # noqa: F401
+    create_user,
+    delete_user,
     get_users,
+    update_user,
 )

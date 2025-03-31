@@ -1,3 +1,4 @@
+import sqlalchemy
 from app.config import settings
 from app.db import get_db
 
@@ -56,10 +57,16 @@ async def create_user(
     user_in: UserCreate,
     db: Session = Depends(get_db),
 ) -> None:
-    db_user = User(**user_in.model_dump())
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    try:
+        db_user = User(**user_in.model_dump())
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+    except sqlalchemy.exc.IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username/Email already exists",
+        )
 
 
 @app.put("/users/{user_id}", status_code=status.HTTP_200_OK)

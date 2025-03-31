@@ -6,11 +6,22 @@ class Token(BaseModel):
     token_type: str
 
 
-class UserPublic(BaseModel):
-    id: int
+class UserBase(BaseModel):
     name: str
     username: str
     email: str
+
+
+class UserCreate(UserBase):
+    pass
+
+
+class UserUpdate(UserBase):
+    pass
+
+
+class UserPublic(UserBase):
+    id: int
 
 
 class PostPublic(BaseModel):
@@ -20,11 +31,11 @@ class PostPublic(BaseModel):
     body: str
 
 
-class UserPostsPublic(UserPublic):
-    posts: list["PostPublic"]
-
-
 class PostCreate(BaseModel):
     userId: int
     title: str
     body: str
+
+
+class UserPostsPublic(UserPublic):
+    posts: list["PostPublic"]
