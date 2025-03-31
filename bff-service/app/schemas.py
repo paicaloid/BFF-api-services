@@ -11,3 +11,20 @@ class UserPublic(BaseModel):
     name: str
     username: str
     email: str
+
+
+class PostPublic(BaseModel):
+    id: int
+    userId: int
+    title: str
+    body: str
+
+
+class UserPostsPublic(UserPublic):
+    posts: list["PostPublic"]
+
+
+class PostCreate(BaseModel):
+    userId: int
+    title: str
+    body: str
