@@ -1,17 +1,26 @@
 from app import crud
 from app.deps import get_current_user
-from app.schemas import PostCreate, UserPostsPublic
+from app.schemas import PostCreate, PostPublic, UserPostsPublic
 from fastapi import APIRouter, Depends, status
 
 router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
-@router.get("/", response_model=UserPostsPublic)
+@router.get("/by-user", response_model=UserPostsPublic)
 async def get_posts_by_username(username: str) -> UserPostsPublic:
     res = await crud.get_posts_by_username(username=username)
     return res
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.get("", response_model=list[PostPublic])
+async def get_posts(
+    skip: int = 0,
+    limit: int = 3,
+) -> list[PostPublic]:
+    res = await crud.get_posts()
+    return res[skip : skip + limit]
+
+
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_post(post_in: PostCreate):
     await crud.create_post(post_in=post_in)
