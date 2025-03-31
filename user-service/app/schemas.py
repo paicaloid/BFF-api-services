@@ -11,6 +11,10 @@ class UserCreate(UserBase):
     pass
 
 
+class UserUpdate(UserBase):
+    pass
+
+
 class UserPublic(UserBase):
     id: int
 
