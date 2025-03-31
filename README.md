@@ -13,10 +13,13 @@ This project contains the Backend-for-Frontend (BFF) API services designed to ac
 5. **Post Service**: Manages posts and comments.
 6. **Database**: Stores user and post data using Microsoft SQL Server.
 
+Note: API Documentation is available at `/docs` endpoint.
+
 ## Features
 - **User Authentication**: Secure login and token generation using OpenID Connect.
 - **Data Aggregation**: Combines data from multiple services into a single API response.
 - **Protected Endpoints**: Ensures that internal services are not directly accessible from the internet.
+
 
 ## Prerequisites
 
