@@ -22,4 +22,10 @@ RUN bash -c "if [ $INSTALL_DEV == 'true' ] ; then poetry install --no-root ; els
 
 ENV PYTHONPATH=/app
 
+COPY ./prestart.sh /app/
+
+COPY ./init_data.py /app/
+
 COPY ./app /app/app
+
+RUN chmod +x /app/prestart.sh

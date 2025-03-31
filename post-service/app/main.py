@@ -1,25 +1,21 @@
-from contextlib import asynccontextmanager
-
 from app import models
-from app.db import engine, get_db
-from app.init_data import init_post
+from app.db import get_db
 from app.schemas import PostCreate, PostPublic, PostUpdate
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    models.Base.metadata.create_all(bind=engine)
-    init_post()
-    yield
-    # models.Base.metadata.drop_all(bind=engine)
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     models.Base.metadata.create_all(bind=engine)
+#     init_post()
+#     yield
+#     # models.Base.metadata.drop_all(bind=engine)
 
 
 app = FastAPI(
     title="User-Service",
-    lifespan=lifespan,
+    # lifespan=lifespan,
 )
 
 

@@ -25,6 +25,13 @@ services:
       - 1433:1433
     volumes:
       - sql-server-data:/var/opt/mssql
+    healthcheck:
+      # test: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P "$$SA_PASSWORD" -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "$${SA_PASSWORD}" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
 
   login:
     image: login-service:latest
@@ -88,6 +95,8 @@ services:
       - 8000:80
     depends_on:
       - login
+      - user
+      - post
     env_file:
       - .env
     environment:

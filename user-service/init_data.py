@@ -1,5 +1,6 @@
 import requests
-from app.db import SessionLocal
+from app import models
+from app.db import SessionLocal, engine
 from app.models import User
 
 
@@ -27,3 +28,12 @@ def init_user():
         db.close()
     else:
         raise Exception("Failed to fetch users from API", res.status_code)
+
+
+def main():
+    models.Base.metadata.create_all(bind=engine)
+    init_user()
+
+
+if __name__ == "__main__":
+    main()

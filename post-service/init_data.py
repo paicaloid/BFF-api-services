@@ -1,5 +1,6 @@
 import requests
-from app.db import SessionLocal
+from app import models
+from app.db import SessionLocal, engine
 from app.models import Post
 
 
@@ -27,3 +28,12 @@ def init_post():
         db.close()
     else:
         raise Exception("Failed to fetch posts from API", res.status_code)
+
+
+def main():
+    models.Base.metadata.create_all(bind=engine)
+    init_post()
+
+
+if __name__ == "__main__":
+    main()
