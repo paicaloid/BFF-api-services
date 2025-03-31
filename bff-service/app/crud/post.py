@@ -1,7 +1,7 @@
 import requests
 from app.config import settings
 from app.crud.user import get_users
-from app.schemas import PostCreate, PostPublic, UserPostsPublic
+from app.schemas import PostCreate, PostPublic, PostUpdate, UserPostsPublic
 from fastapi import HTTPException
 
 
@@ -73,6 +73,57 @@ async def create_post(post_in: PostCreate) -> None:
             raise HTTPException(
                 status_code=response.status_code,
                 detail="Failed to create post",
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Request to post service failed: {str(e)}",
+        )
+
+
+async def update_post(post_id: int, post_in: PostUpdate) -> None:
+    """
+    Updates an existing post in the post service.
+    """
+    url = f"{settings.post_url}/posts/{post_id}"
+    headers = {
+        "Content-Type": "application/json",
+    }
+    headers.update(settings.header)
+    data = post_in.model_dump()
+    try:
+        response = requests.put(url, json=data, headers=headers)
+        if response.status_code == 200:
+            return
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to update post",
+            )
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Request to post service failed: {str(e)}",
+        )
+
+
+async def delete_post(post_id: int) -> None:
+    """
+    Deletes a post in the post service.
+    """
+    url = f"{settings.post_url}/posts/{post_id}"
+    headers = {
+        "Content-Type": "application/json",
+    }
+    headers.update(settings.header)
+    try:
+        response = requests.delete(url, headers=headers)
+        if response.status_code == 200:
+            return
+        else:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to delete post",
             )
     except requests.exceptions.RequestException as e:
         raise HTTPException(

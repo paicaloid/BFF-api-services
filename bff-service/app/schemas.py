@@ -24,17 +24,22 @@ class UserPublic(UserBase):
     id: int
 
 
-class PostPublic(BaseModel):
+class PostBase(BaseModel):
+    userId: int
+    title: str
+    body: str
+
+
+class PostCreate(PostBase):
+    pass
+
+
+class PostUpdate(PostBase):
+    pass
+
+
+class PostPublic(PostBase):
     id: int
-    userId: int
-    title: str
-    body: str
-
-
-class PostCreate(BaseModel):
-    userId: int
-    title: str
-    body: str
 
 
 class UserPostsPublic(UserPublic):

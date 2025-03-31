@@ -1,6 +1,6 @@
 from app import crud
 from app.deps import get_current_user
-from app.schemas import PostCreate, PostPublic, UserPostsPublic
+from app.schemas import PostCreate, PostPublic, PostUpdate, UserPostsPublic
 from fastapi import APIRouter, Depends, status
 
 router = APIRouter(dependencies=[Depends(get_current_user)])
@@ -24,3 +24,13 @@ async def get_posts(
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_post(post_in: PostCreate):
     await crud.create_post(post_in=post_in)
+
+
+@router.put("/{post_id}", status_code=status.HTTP_200_OK)
+async def update_post(post_id: int, post_in: PostUpdate):
+    await crud.update_post(post_id=post_id, post_in=post_in)
+
+
+@router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_post(post_id: int):
+    await crud.delete_post(post_id=post_id)
